@@ -42,8 +42,8 @@ date_format = date.strftime('%Y-%m-%d')
 
 #replace start date, end date and year in the configuation file
 kwargs = {'MODEL_START_DATE': date_format, 'MODEL_END_DATE': date_format} 
-
 model_tools.replace_var_pythonic_config(old_config_file, new_config_file, header=None, **kwargs) 
+
 #create attribute dictionaries 
 
 #global attributes
@@ -131,7 +131,7 @@ vs_attrs['missing_value'] = -32767.
 pr_url = ("http://thredds.northwestknowledge.net:8080" +
                 "/thredds/dodsC/MET/pr/pr_%s.nc?lon[0:1:1385]," %(year) +
                 "lat[0:1:584],day[%s:1:%s]," %(num_day, num_day) +
-                "air_temperature[%s:1:%s]" %(num_day, num_day) +
+                "precipitation_amount[%s:1:%s]" %(num_day, num_day) +
                 "[0:1:1385][0:1:584]")
 pr_ds = xr.open_dataset(pr_url)
 #add attributes (these are include the same descriptions as can be found from URL
@@ -147,7 +147,7 @@ pr_ds.to_netcdf('%s/pr.nc' %(met_loc),
 
 #minimum temperature
 tmmn_url = ("http://thredds.northwestknowledge.net:8080" +
-                "/thredds/dodsC/MET/pr/pr_%s.nc?lon[0:1:1385]," %(year) +
+                "/thredds/dodsC/MET/tmmn/tmmn_%s.nc?lon[0:1:1385]," %(year) +
                 "lat[0:1:584],day[%s:1:%s]," %(num_day, num_day) +
                 "air_temperature[%s:1:%s]" %(num_day, num_day) +
                 "[0:1:1385][0:1:584]")
@@ -162,6 +162,7 @@ tmmn_ds.to_netcdf('%s/tmmn.nc' %(met_loc),
 
 #maximum temperature
 tmmx_url = ("http://thredds.northwestknowledge.net:8080" +
+		"/thredds/dodsC/MET/tmmx/tmmx_%s.nc?lon[0:1:1385]," %(year) +
                 "lat[0:1:584],day[%s:1:%s]," %(num_day, num_day) +
                 "air_temperature[%s:1:%s]" %(num_day, num_day) +
                 "[0:1:1385][0:1:584]")
@@ -178,7 +179,7 @@ tmmx_ds.to_netcdf('%s/tmmx.nc' %(met_loc),
 vs_url = ("http://thredds.northwestknowledge.net:8080" +
                 "/thredds/dodsC/MET/vs/vs_%s.nc?lon[0:1:1385]," %(year) +
                 "lat[0:1:584],day[%s:1:%s]," %(num_day, num_day) +
-                "air_temperature[%s:1:%s]" %(num_day, num_day) +
+                "wind_speed[%s:1:%s]" %(num_day, num_day) +
                 "[0:1:1385][0:1:584]")
 vs_ds = xr.open_dataset(vs_url)
 vs_ds.wind_speed.attrs = vs_attrs

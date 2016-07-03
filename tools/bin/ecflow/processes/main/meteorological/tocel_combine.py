@@ -5,7 +5,7 @@ tocel_combine.py
 combine.py runs this script
 by replacing the ALL CAPITAL words
 and using subprocess.
-This script changes tmin and tmax units from Kelvin to celsius
+This script changes tmin and tmax units from Kelvin to Celsius
 and combines precip, tmax, tmin, and wind into 1 file for each grid cell. 
 """
 import pandas as pd
@@ -20,7 +20,7 @@ wind_dir = '{WIND_DIREC}'
 final_dir = '{FINAL_DIREC}'
 
 #read in tmin and tmax
-#temperature data is in kelvin, switch to celcius
+#temperature data is in Kelvin, switch to Celcius
 tmin_kel = np.genfromtxt('%s{DATA_LAT_LON}' %(tmin_dir))
 tmax_kel = np.genfromtxt('%s{DATA_LAT_LON}' %(tmax_dir))
 
@@ -31,9 +31,7 @@ tmax_cel = tmax_kel - KELVIN
 precip = np.genfromtxt('%s{DATA_LAT_LON}' %(precip_dir), dtype='float')
 wind = np.genfromtxt('%s{DATA_LAT_LON}' %(wind_dir), dtype='float')
 
-#create dictionary in the order that VIC reads in forcings parameters
-d = {'precipitation': format(precip, '.5f'), 'tmax': format(tmax_cel, '.5f'), 'tmin': format(tmin_cel, '.5f'), 'wind': format(wind, '.5f')}
-
+#create a dataframe in the order that VIC reads in forcings parameters
 df = pd.DataFrame(data=[("%.5f" % precip, "%.5f" % tmax_cel,
         "%.5f" % tmin_cel, "%.5f" % wind)], 
 	columns=['precipitation', 'tmax', 'tmin', 'wind'], 

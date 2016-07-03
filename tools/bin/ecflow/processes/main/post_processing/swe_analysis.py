@@ -4,9 +4,9 @@ plotting swe percentiles
 usage: <python> <swe_plot.py> <configuration.cfg>
 
 Reads in a netcdf file converted from VIC fluxes.
-Extract one day's data based on date in config file.
-Read in saved cdfs.
-Interpolate the every value's  percentile 
+Extracts one day's data based on date in config file.
+Reads in saved cdfs.
+Interpolates every value's  percentile 
 based on where it falls relative to historic range. 
 Save as new netcdf file to be read by plotting script.
 """
@@ -19,6 +19,7 @@ import time
 import math
 import gc
 import argparse
+from scipy.interpolate import interp1d
 from netCDF4 import Dataset
 from tonic.io import read_config
 
@@ -32,13 +33,13 @@ config_dict = read_config(args.config_file[0].name)
 #read in from configuration file
 direc = config_dict['VIC2NC']['OutputDirNC']
 N = config_dict['ECFLOW']['Met_Delay']
+N = int(N)
+
 #number of plotting positions
 num_pp = config_dict['PLOT']['num_plot_pos']
+num_pp = int(num_pp)
 cdf_loc = config_dict['PLOT']['cdf_SWE']
 outfile = config_dict['PLOT']['Percent_SWE']
-
-N = int(N)
-num_pp = float(num_pp)
 
 #how many days behind metdata is from realtime
 date_unformat = datetime.now() - timedelta(days=N)
@@ -63,10 +64,9 @@ latitude = np.repeat(un_lat,num_lon)
 longitude = np.tile(un_lon, num_lat)
 
 #Weibull Plotting Position
-q = []
-
+q = np.zeros(num_pp)
 for i in range(1,num_pp+1):
-	q.append(i/(num_pp+1))
+	q[i-1]=(i/(num_pp+1.0))
 
 #create a min and max plotting position 
 #for any values that fall outside of historic range   
@@ -95,14 +95,14 @@ for i in range(0,len(latitude)):
 	#if cdf cannot be read then that lat lon is saved in the dictionary without a percentile
 	#this is done to make creating the xarray dataset easier later on
 	try: 
-		cdf_file = "%s_$s" %(lat, lon)
-		cdf_path = os.path.join(cdf_loc, month_day, cdf_file 
+		cdf_file = "%s_%s" %(lat, lon)
+		cdf_path = os.path.join(cdf_loc, month_day, cdf_file) 
 		cdf = pd.read_csv(cdf_path, index_col=None, delimiter=None, header=None)
 		x = cdf[0]
         
 		#10mm threshold (this is based on current monitor)
 		
-		if (value < 1):
+		if (value < 10):
 			combine = (lat, lon)
 			d.append(combine)
 		else:    
@@ -136,11 +136,11 @@ df = pd.DataFrame(d, columns=["Latitude", "Longitude", "Percentile"])
 a = df['Percentile'].values
 new = a.reshape(195, 245)
 
-dsx = xr.Dataset({'percentile': (['lat', 'lon'], new)}, 
+dsx = xr.Dataset({'Percentile': (['lat', 'lon'], new)}, 
 	coords={'lon': (['lon'], un_lon), 'lat': (['lat'], un_lat)})
 
 #save to netcdf
-dsx.to_netcdf(outfile, mode='w', format='NETCDF4')
+dsx.to_netcdf('%s' %(outfile), mode='w', format='NETCDF4')
 
 
 

@@ -1,3 +1,7 @@
+'''
+log.py
+'''
+
 import logging
 import logging.config
 

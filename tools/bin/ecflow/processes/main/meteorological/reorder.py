@@ -37,5 +37,4 @@ for var in param:
 	if os.path.isfile(reorder_file):
 		os.remove(reorder_file)
 
-	nco.ncpdq(input=nc_file, output=reorder_file, options='-a',
-       			dimension='day,lat,lon')
+	nco.ncpdq(input=nc_file, output=reorder_file, arrange='day,lat,lon')

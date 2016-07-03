@@ -22,7 +22,7 @@ from monitor import model_tools
 
 
 def main():
-	# parse arguments
+	#parse arguments
 	parser = argparse.ArgumentParser(description='Run VIC')
 	parser.add_argument('config_file', metavar='config_file',
                         type=argparse.FileType('r'), nargs=1,
@@ -30,7 +30,7 @@ def main():
 	args = parser.parse_args()
 	config_dict = read_config(args.config_file[0].name)
 
-	# set up logger
+	#set up logger
 	logger = set_logger(os.path.splitext(os.path.split(__file__)[-1])[0],
                         LOG_LEVEL)
 
@@ -69,8 +69,9 @@ def main():
 		model_tools.copy_clean_vic_config(script,
                                                 lat_lons, header=None, **kwargs)
 
+		lat_lons_list.append(lat_lons)
 		log_dir_list.append(log_dir)
-
+	
 	#run each tocel_combine script using subprocess
 	if cores > 1:
 	        try:
@@ -102,4 +103,5 @@ def main():
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     main()
+
 

@@ -15,6 +15,9 @@ from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import cartopy.io.shapereader as shpreader
 from tonic.io import read_config
 from monitor.plot import add_gridlines, add_map_features
+import xarray as xr
+import argparse
+from datetime import datetime, timedelta
 
 #read in configuration file
 parser = argparse.ArgumentParser(description='Reorder dimensions')
@@ -26,6 +29,18 @@ config_dict = read_config(args.config_file[0].name)
 #read in from configuration file
 percent_file = config_dict['PLOT']['Percent_SWE']
 plot_loc = config_dict['PLOT']['plot_SWE']
+N = config_dict['ECFLOW']['Met_Delay']
+N = int(N)
+
+#how many days behind metdata is from realtime
+date_unformat = datetime.now() - timedelta(days=N)
+
+date = date_unformat.strftime('%Y-%m-%d')
+date_ncfile = date_unformat.strftime('%Y%m%d')
+month_day = date_unformat.strftime("%B_%-d")
+
+#read in nc file with percentiles
+dsx = xr.open_dataset(percent_file)
 
 #plotting
 plt.figure(figsize=(8,8))
@@ -43,7 +58,7 @@ cmap = matplotlib.colors.ListedColormap(['darkred', 'red', 'tomato', 'lightsalmo
                                         'yellow', 'lightsteelblue', 'cornflowerblue', 
 					'royalblue', 'blue', 'navy'])
 
-img=dsx['percentile'].plot(ax=ax, vmin=0, vmax=10, 
+img=dsx['Percentile'].plot(ax=ax, vmin=0, vmax=10, 
 	levels=[0, 0.01, 0.05, 0.1, 0.2, 0.35, 0.65, 0.8, 0.9, 0.95, 0.99, 1.0], 
 	add_colorbar=False, cmap=cmap, transform=ccrs.PlateCarree(), zorder=2)
 
@@ -59,5 +74,5 @@ cbar.ax.tick_params(labelsize=12)
 cbar.ax.set_xlabel('percentile', fontsize=15)
 
 #save figure
-plt.savefig('%s/SWE_%s' %(plot_loc, date_ncfile), format='png', bbox='tight')
+plt.savefig('%s/SWE_%s.png' %(plot_loc, date_ncfile), bbox='tight')
 

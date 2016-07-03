@@ -1,8 +1,6 @@
 """
 share.py
 """
-import netCDF4
-import sys
 
 LOG_LEVEL = 'DEBUG'
 

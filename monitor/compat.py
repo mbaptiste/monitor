@@ -1,5 +1,5 @@
 """
-combat.py
+compat.py
 """
 
 import sys
