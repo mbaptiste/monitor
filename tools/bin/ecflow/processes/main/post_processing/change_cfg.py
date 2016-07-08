@@ -16,8 +16,8 @@ from monitor import model_tools
 # parse arguments
 parser = argparse.ArgumentParser(description='Run VIC')
 parser.add_argument('config_file', metavar='config_file',
-                        type=argparse.FileType('r'), nargs=1,
-                        help='configuration file')
+                    type=argparse.FileType('r'), nargs=1,
+                    help='configuration file')
 args = parser.parse_args()
 config_dict = read_config(args.config_file[0].name)
 
@@ -29,9 +29,9 @@ domain_file = config_dict['VIC2NC']['DomainFile']
 config_file = config_dict['VIC2NC']['ConfigFile']
 temp_config_file = config_dict['VIC2NC']['TempConfigFile']
 
-kwargs = {'INPUT_DIR': input_dir, 'OUTPUT_DIR': output_dir, 
-	'MODEL_START_DATE': startdate, 'MODEL_END_DATE': enddate, 
-	'DOMAIN_FILE': domain_file}
+kwargs = {'INPUT_DIR': input_dir, 'OUTPUT_DIR': output_dir,
+          'MODEL_START_DATE': startdate, 'MODEL_END_DATE': enddate,
+          'DOMAIN_FILE': domain_file}
 
-model_tools.copy_clean_vic_config(config_file, temp_config_file, header=None, **kwargs)
-
+model_tools.copy_clean_vic_config(
+    config_file, temp_config_file, header=None, **kwargs)

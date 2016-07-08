@@ -7,8 +7,9 @@ import logging.config
 
 
 loglvl_dict = {'DEBUG': logging.DEBUG, 'INFO': logging.INFO,
-                   'WARNING': logging.WARNING, 'ERROR': logging.ERROR,
-                   'CRITICAL': logging.CRITICAL}
+               'WARNING': logging.WARNING, 'ERROR': logging.ERROR,
+               'CRITICAL': logging.CRITICAL}
+
 
 def set_logger(name='logname', loglvl='DEBUG'):
     """Set up logger"""

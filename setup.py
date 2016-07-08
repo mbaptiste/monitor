@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-#usage: <python> <setup.py> <install>
+# usage: <python> <setup.py> <install>
 import os
 # temporarily redirect config directory to prevent matplotlib importing
 # testing that for writeable directory which results in sandbox error in
@@ -26,6 +26,7 @@ try:
     _has_setuptools = True
 except ImportError:
     from distutils.core import setup
+
 
 def check_dependencies():
     install_requires = []
@@ -56,14 +57,14 @@ def check_dependencies():
     except ImportError:
         install_requires.append('cartopy')
     try:
-	import netCDF4
+        import netCDF4
     except ImportError:
         install_requires.append('netCDF4')
-    try: 
-	import configobj
-    except: 
-	install_requires.append('configobj')
-  
+    try:
+        import configobj
+    except:
+        install_requires.append('configobj')
+
     return install_requires
 
 if __name__ == "__main__":
