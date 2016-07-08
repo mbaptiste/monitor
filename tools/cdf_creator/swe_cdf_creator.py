@@ -3,23 +3,25 @@
 swe_cdf_creator.py
 usage: <python> <swe_cdf_creator.py> <configuration.cfg>
 
-Creates list of ascending list from long-term SWE VIC produced data.
-Period of time is defined in configuration file. 
-Applies a moving window-esque method to collect 
-5 days of data at a time and then sorts that data. 
+Creates empirical CDFs from daily simulated long-term SWE.
+Reference period is defined in configuration file.
+A CDF is generated for a particular day of the year by collecting
+SWE data for five days around that day for all years in the
+period and sorting the values.
+The output is a .csv file containing the sorted list for each
+day of the year for each grid cell.
+How leap years are handled:
 February 29th data is removed before being sorted.
-February 28th (plus surround two days) is stored at February 29th. 
+February 28th (plus surround two days) is stored at February 29th.
+ 
 """
 import datetime as dt
-import numpy as np
 import pandas as pd
 import xray
 import os
-import time
-import math
-import gc
 import argparse
 from tonic.io import read_config
+from monitor import os_tools
 
 #read in configuration file
 parser = argparse.ArgumentParser(description='Reorder dimensions')
@@ -48,17 +50,17 @@ ds_timeslice = ds.sel(time=slice(start_date, end_date))
 
 #read in list of grid cells for the PNW
 coordinates = pd.read_csv(latlon_list, sep=' ', 
-	index_col=None, delimiter=None, header=None)
+ 	                  index_col=None, delimiter=None, header=None)
 
 latitude = coordinates[0]
 longitude = coordinates[1]
 
-#create plotting positions using Wiebull distribution
+#create plotting positions using Weibull distribution
 
 q = []
 
-for i in range(1,num_pp+1):
-    q.append(i/(num_pp+1.0))
+for i in range(1, num_pp + 1):
+    q.append(i / (num_pp + 1.0))
 
 #cdfs for SWE
 for i in range(0,len(latitude)):
@@ -90,19 +92,18 @@ for i in range(0,len(latitude)):
         lat = latitude[i]
         lon = longitude[i]
         
-	filename = '%s_%s' %(lat, lon)
+	filename = '%s_%s' % (lat, lon)
 
         #save the 150 values by day and lat/lon
-        month_dir = "%s_%s" %(month, current_day.day)
+        month_dir = "%s_%s" % (month, current_day.day)
 	path2 = os.path.join(output_direc, month_dir)
-        if not os.path.exists(path2):
-            os.makedirs(path2)
+        os_tools.make_dirs(path2)
         savepath2 = os.path.join(path2, filename)
         cc.to_csv(savepath2, sep=' ', header=False, index=None)
 
 
 #save February 28 data as February 29
-for i in range(0,len(latitude)):
+for i in range(0, len(latitude)):
     lat_data = data_year.sel(lat=latitude[i])
 
     s = ds_latslice.sel(lon=longitude[i]).to_series()
@@ -130,15 +131,12 @@ for i in range(0,len(latitude)):
     lat = latitude[i]
     lon = longitude[i]
 
-    filename = '%s_%s' %(lat, lon)
+    filename = '%s_%s' % (lat, lon)
 
     #save the 150 values by day and lat/lon
-    month_dir = "%s_%s" %(month, current_day.day)
+    month_dir = "%s_%s" % (month, current_day.day)
     path2 = os.path.join(output_direc, month_dir)
-    if not os.path.exists(path2):
-        os.makedirs(path2)
+    os_tools.make_dirs(path2)
     savepath2 = os.path.join(path2, filename)
     cc.to_csv(savepath2, sep=' ', header=False, index=None)
-
-
 

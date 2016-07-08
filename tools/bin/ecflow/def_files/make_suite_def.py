@@ -3,8 +3,6 @@
 make_suite_def.py
 """
 import os
-import os.path
-import sys
 import argparse
 
 import ecflow

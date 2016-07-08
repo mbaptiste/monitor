@@ -14,8 +14,8 @@ and then those results are compared with 30 years of historic data.
 """
 
 DISTNAME = 'monitor'
-MAINTAINER = 'Marisa Baptiste'
-MAINTAINER_EMAIL = 'mbap4@uw.edu'
+MAINTAINER = 'Hordur Helgason'
+MAINTAINER_EMAIL = 'helgason@uw.edu'
 URL = 'unknown'
 LICENSE = 'GNU GENERAL PUBLIC LICENSE Version 3, 29'
 DOWNLOAD_URL = 'https://github.com/UW-Hydro/monitor'

@@ -63,7 +63,7 @@ img=dsx['Percentile'].plot(ax=ax, vmin=0, vmax=10,
 	add_colorbar=False, cmap=cmap, transform=ccrs.PlateCarree(), zorder=2)
 
 
-plt.suptitle('SWE Percentile (threshold = 10mm)\n (%s)'%(date), 
+plt.suptitle('SWE Percentile (threshold = 10mm)\n (%s)'% (date), 
 	y=1., x=.5, fontsize=16, fontweight='bold')
 
 cbar = plt.colorbar(img, cmap=cmap, shrink=.95, orientation='horizontal')
@@ -74,5 +74,5 @@ cbar.ax.tick_params(labelsize=12)
 cbar.ax.set_xlabel('percentile', fontsize=15)
 
 #save figure
-plt.savefig('%s/SWE_%s.png' %(plot_loc, date_ncfile), bbox='tight')
+plt.savefig('%s/SWE_%s.png' % (plot_loc, date_ncfile), bbox='tight')
 

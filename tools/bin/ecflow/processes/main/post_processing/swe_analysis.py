@@ -49,7 +49,7 @@ date_ncfile = date_unformat.strftime('%Y%m%d')
 month_day = date_unformat.strftime("%B_%-d")
 
 #read VIC output that has been converted to a netcdf file 
-f = "pnw_daily_run.%s-%s.nc" %(date_ncfile, date_ncfile)
+f = "pnw_daily_run.%s-%s.nc" % (date_ncfile, date_ncfile)
 
 ds = xr.open_dataset(os.path.join(direc,f))
 
@@ -80,7 +80,7 @@ swe_ds = ds_day['SWE']
 #create a dictionary containing the lat, lon and corresponding percentile value (if one exists)
 d = []
 
-for i in range(0,len(latitude)):
+for i in range(0, len(latitude)):
     
 	#iterate through all latitudes and longitudes
 	ds_lat = swe_ds.sel(lat=latitude[i])
@@ -95,7 +95,7 @@ for i in range(0,len(latitude)):
 	#if cdf cannot be read then that lat lon is saved in the dictionary without a percentile
 	#this is done to make creating the xarray dataset easier later on
 	try: 
-		cdf_file = "%s_%s" %(lat, lon)
+		cdf_file = "%s_%s" % (lat, lon)
 		cdf_path = os.path.join(cdf_loc, month_day, cdf_file) 
 		cdf = pd.read_csv(cdf_path, index_col=None, delimiter=None, header=None)
 		x = cdf[0]
@@ -140,7 +140,5 @@ dsx = xr.Dataset({'Percentile': (['lat', 'lon'], new)},
 	coords={'lon': (['lon'], un_lon), 'lat': (['lat'], un_lat)})
 
 #save to netcdf
-dsx.to_netcdf('%s' %(outfile), mode='w', format='NETCDF4')
-
-
+dsx.to_netcdf(outfile, mode='w', format='NETCDF4')
 
