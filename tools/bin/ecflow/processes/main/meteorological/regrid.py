@@ -4,8 +4,7 @@ regrid.py
 usage: <python> <regrid.py> <configuration.cfg>
 
 This script changes the grid and domain in accordance with 
-the grid_file.
-This script uses subprocess to execute cdo remapcon. 
+the grid_file, using remapcon.
 Remapcon was selected to ensure that no precipiation was lost
 in the regridding process. 
 """
@@ -15,34 +14,35 @@ import argparse
 from cdo import Cdo
 cdo = Cdo()
 from tonic.io import read_config
-from monitor.io import proc_subprocess
 
 ######### ----------------------------------------###########
 
-#read in configuration file
+# read in configuration file
 parser = argparse.ArgumentParser(description='Reorder dimensions')
-parser.add_argument('config_file', metavar='config_file', type=argparse.FileType('r'), nargs=1, help='configuration file')
+parser.add_argument('config_file', metavar='config_file',
+                    type=argparse.FileType('r'), nargs=1,
+                    help='configuration file')
 args = parser.parse_args()
 config_dict = read_config(args.config_file[0].name)
 
-#read in met location from config file
+# read in met location from config file
 met_loc = config_dict['ECFLOW']['Met_Loc']
 
-#read in grid_file from config file
-grid_file = '%s/grid_info' %(met_loc)
+# read in grid_file from config file
+grid_file = '%s/grid_info' % (met_loc)
 
-#netcdf file prefixes
+# netcdf file prefixes
 param = ['pr', 'tmmn', 'tmmx', 'vs']
 
 
 for var in param:
-	#in file
-	reorder_file = '%s/%s.reorder.nc' %(met_loc, var)
-	#out file
-	regrid_file = '%s/%s.regrid.nc' %(met_loc, var)
-	
-		#remove previous days file, cdo doesn't overwrite
-        if os.path.isfile(regrid_file):
-                os.remove(regrid_file)
+    # in file
+    reorder_file = os.path.join(met_loc, '%s.reorder.nc' % (var))
+    # out file
+    regrid_file = os.path.join(met_loc, '%s.regrid.nc' % (var))
 
-	cdo.remapcon(grid_file, input=reorder_file, output=regrid_file)
+    # remove previous days file, cdo doesn't overwrite
+    if os.path.isfile(regrid_file):
+        os.remove(regrid_file)
+
+    cdo.remapcon(grid_file, input=reorder_file, output=regrid_file)

@@ -3,14 +3,13 @@
 make_suite_def.py
 """
 import os
-import os.path
-import sys
 import argparse
 
 import ecflow
 
 from tonic.io import read_config
 from monitor.log import set_logger
+
 
 def main():
     """
@@ -19,7 +18,8 @@ def main():
 
     logger = set_logger(os.path.splitext(os.path.split(__file__)[-1])[0],
                         'INFO')
-    parser = argparse.ArgumentParser(description='Create suite definition file')
+    parser = argparse.ArgumentParser(
+        description='Create suite definition file')
     parser.add_argument('suite_config_file', metavar='suite_config_file',
                         type=argparse.FileType('r'), nargs=1,
                         help='configuration file for suite definition file')
@@ -66,9 +66,10 @@ def main():
         logger.info('Successful trigger expressions')
 
     logger.info('Saving definition to file {}'.format(
-                                                suite_dict['MAIN']['DefFile']))
+        suite_dict['MAIN']['DefFile']))
     defs.save_as_defs(suite_dict['MAIN']['DefFile'])
     return
+
 
 def add_dependencies(node, key, suite_dict):
     # add optional meters and events
@@ -104,6 +105,6 @@ def add_dependencies(node, key, suite_dict):
             node.add_variable(suite_dict[key]['VariableName{}'.format(v)],
                               suite_dict[key]['VariableValue{}'.format(v)])
     return node
-                        
+
 if __name__ == "__main__":
     main()
