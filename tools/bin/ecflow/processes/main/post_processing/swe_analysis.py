@@ -35,8 +35,7 @@ direc = config_dict['VIC2NC']['OutputDirNC']
 N = int(config_dict['ECFLOW']['Met_Delay'])
 
 # number of plotting positions
-num_pp = config_dict['PLOT']['num_plot_pos']
-num_pp = int(num_pp)
+num_pp = int(config_dict['PLOT']['num_plot_pos'])
 cdf_loc = config_dict['PLOT']['cdf_SWE']
 outfile = config_dict['PLOT']['Percent_SWE']
 
