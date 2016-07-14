@@ -30,9 +30,9 @@ param = ['pr', 'tmmn', 'tmmx', 'vs']
 
 for var in param:
     # in file
-    nc_file = '%s/%s.nc' % (met_loc, var)
+    nc_file = os.path.join(met_loc, '%s.nc' % (var))
     # out file
-    reorder_file = '%s/%s.reorder.nc' % (met_loc, var)
+    reorder_file = os.path.join(met_loc, '%s.reorder.nc' % (var))
 
     # remove previous days file, ncpdq doesn't overwrite
     if os.path.isfile(reorder_file):

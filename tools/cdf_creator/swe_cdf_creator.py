@@ -34,13 +34,11 @@ config_dict = read_config(args.config_file[0].name)
 direc = config_dict['CDF']['Historic_Direc']
 f = config_dict['CDF']['Historic_File']
 # number of plotting positions
-num_pp = config_dict['CDF']['num_plot_pos']
+num_pp = int(config_dict['CDF']['num_plot_pos'])
 start_date = config_dict['CDF']['Start_Date']
 end_date = config_dict['CDF']['End_Date']
 latlon_list = config_dict['CDF']['LatLon_List']
 output_direc = config_dict['SWE']['Out_Dir']
-
-num_pp = int(num_pp)
 
 # load in netcdf file from which cdfs will be taken
 ds = xray.open_dataset(os.path.join(direc, f))
@@ -55,18 +53,11 @@ coordinates = pd.read_csv(latlon_list, sep=' ',
 latitude = coordinates[0]
 longitude = coordinates[1]
 
-# create plotting positions using Weibull distribution
-
-q = []
-
-for i in range(1, num_pp + 1):
-    q.append(i / (num_pp + 1.0))
-
 # cdfs for SWE
-for i in range(0, len(latitude)):
-    ds_latslice = ds_timeslice.sel(lat=latitude[i])
+for lat, lon in zip(latitude, longitude):
+    ds_latslice = ds_timeslice.sel(lat=lat)
     # group by month and day
-    s = ds_latslice['SWE'].sel(lon=longitude[i]).to_series()
+    s = ds_latslice['SWE'].sel(lon=lon).to_series()
     # remove February 29th data
     ss = s[(s.index.month != 2) | (s.index.day != 29)]
     gb = ss.groupby([ss.index.month, ss.index.day])
@@ -79,17 +70,16 @@ for i in range(0, len(latitude)):
         yesterday_2 = current_day - dt.timedelta(days=2)
         tomorrow_2 = current_day + dt.timedelta(days=2)
 
-        cc = pd.concat([gb.get_group(g), gb.get_group((yesterday.month,
-                                                       yesterday.day)), gb.get_group((yesterday_2.month,
-                                                                                      yesterday_2.day)), gb.get_group((tomorrow.month,
-                                                                                                                       tomorrow.day)), gb.get_group((tomorrow_2.month, tomorrow_2.day))])
+        cc = pd.concat([
+	    gb.get_group(g),
+            gb.get_group((yesterday.month, yesterday.day)),
+            gb.get_group((yesterday_2.month, yesterday_2.day)), 
+            gb.get_group((tomorrow.month, tomorrow.day)), 
+            gb.get_group((tomorrow_2.month, tomorrow_2.day))])
 
         cc.sort()
 
         month = current_day.strftime('%B')
-
-        lat = latitude[i]
-        lon = longitude[i]
 
         filename = '%s_%s' % (lat, lon)
 
@@ -102,10 +92,11 @@ for i in range(0, len(latitude)):
 
 
 # save February 28 data as February 29
-for i in range(0, len(latitude)):
-    lat_data = data_year.sel(lat=latitude[i])
-
-    s = ds_latslice.sel(lon=longitude[i]).to_series()
+for lat, lon in zip(latitude, longitude):
+    ds_latslice = ds_timeslice.sel(lat=lat)
+    # group by month and day
+    s = ds_latslice['SWE'].sel(lon=lon).to_series()
+    # remove February 29th data
     ss = s[(s.index.month != 2) | (s.index.day != 29)]
     gb = ss.groupby([ss.index.month, ss.index.day])
 
@@ -117,22 +108,20 @@ for i in range(0, len(latitude)):
     yesterday_2 = current_day - dt.timedelta(days=2)
     tomorrow_2 = current_day + dt.timedelta(days=2)
 
-    cc = pd.concat([gb.get_group(g), gb.get_group((yesterday.month,
-                                                   yesterday.day)), gb.get_group((yesterday_2.month,
-                                                                                  yesterday_2.day)), gb.get_group((tomorrow.month,
-                                                                                                                   tomorrow.day)), gb.get_group((tomorrow_2.month, tomorrow_2.day))])
+    cc = pd.concat([gb.get_group(g), 
+        gb.get_group((yesterday.month, yesterday.day)),
+        gb.get_group((yesterday_2.month, yesterday_2.day)), 
+        gb.get_group((tomorrow.month, tomorrow.day)),
+        gb.get_group((tomorrow_2.month, tomorrow_2.day))])
 
     cc.sort()
 
     month = current_day.strftime('%B')
 
-    lat = latitude[i]
-    lon = longitude[i]
-
     filename = '%s_%s' % (lat, lon)
 
-    # save the 150 values by day and lat/lon
-    month_dir = "%s_%s" % (month, current_day.day)
+    # save the 150 values by day (February 29)  and lat/lon
+    month_dir = "%s_%s" % (month, '29')
     path2 = os.path.join(output_direc, month_dir)
     os_tools.make_dirs(path2)
     savepath2 = os.path.join(path2, filename)

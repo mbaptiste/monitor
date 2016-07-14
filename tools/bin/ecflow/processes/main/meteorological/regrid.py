@@ -29,7 +29,7 @@ config_dict = read_config(args.config_file[0].name)
 met_loc = config_dict['ECFLOW']['Met_Loc']
 
 # read in grid_file from config file
-grid_file = '%s/grid_info' % (met_loc)
+grid_file = os.path.join(met_loc, 'grid_info')
 
 # netcdf file prefixes
 param = ['pr', 'tmmn', 'tmmx', 'vs']

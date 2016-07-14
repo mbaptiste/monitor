@@ -8,6 +8,7 @@ delivered through OPeNDAP. Because attributes are lost during download,
 they are added back in. 
 """
 import xarray as xr
+import os
 import argparse
 from collections import OrderedDict
 from datetime import datetime, timedelta
@@ -26,9 +27,7 @@ config_dict = read_config(args.config_file[0].name)
 met_loc = config_dict['ECFLOW']['Met_Loc']
 old_config_file = config_dict['ECFLOW']['old_Config']
 new_config_file = config_dict['ECFLOW']['new_Config']
-N = config_dict['ECFLOW']['Met_Delay']
-
-N = int(N)
+N =int(config_dict['ECFLOW']['Met_Delay'])
 
 # get date and number of days
 date = datetime.now() - timedelta(days=N)
@@ -146,7 +145,7 @@ pr_ds.lon.attrs = lon_attrs
 pr_ds.day.attrs = day_attrs
 pr_ds.attrs = globe_attrs
 # save netcdf
-pr_ds.to_netcdf('%s/pr.nc' % (met_loc),
+pr_ds.to_netcdf(os.path.join(met_loc, 'pr.nc'),
                 mode='w', format='NETCDF4')
 
 # minimum temperature
@@ -161,7 +160,7 @@ tmmn_ds.lat.attrs = lat_attrs
 tmmn_ds.lon.attrs = lon_attrs
 tmmn_ds.day.attrs = day_attrs
 tmmn_ds.attrs = globe_attrs
-tmmn_ds.to_netcdf('%s/tmmn.nc' % (met_loc),
+tmmn_ds.to_netcdf(os.path.join(met_loc, 'tmmn.nc'),
                   mode='w', format='NETCDF4')
 
 # maximum temperature
@@ -176,7 +175,7 @@ tmmx_ds.lat.attrs = lat_attrs
 tmmx_ds.lon.attrs = lon_attrs
 tmmx_ds.day.attrs = day_attrs
 tmmx_ds.attrs = globe_attrs
-tmmx_ds.to_netcdf('%s/tmmx.nc' % (met_loc),
+tmmx_ds.to_netcdf(os.path.join(met_loc, 'tmmx.nc'),
                   mode='w', format='NETCDF4')
 
 # wind speed
@@ -191,5 +190,5 @@ vs_ds.lat.attrs = lat_attrs
 vs_ds.lon.attrs = lon_attrs
 vs_ds.day.attrs = day_attrs
 vs_ds.attrs = globe_attrs
-vs_ds.to_netcdf('%s/vs.nc' % (met_loc),
-                mode='w', format='NETCDF4')
+vs_ds.to_netcdf(os.path.join(met_loc, 'vs.nc'), 
+		mode='w', format='NETCDF4')

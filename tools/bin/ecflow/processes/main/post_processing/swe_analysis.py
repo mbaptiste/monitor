@@ -32,8 +32,7 @@ config_dict = read_config(args.config_file[0].name)
 
 # read in from configuration file
 direc = config_dict['VIC2NC']['OutputDirNC']
-N = config_dict['ECFLOW']['Met_Delay']
-N = int(N)
+N = int(config_dict['ECFLOW']['Met_Delay'])
 
 # number of plotting positions
 num_pp = config_dict['PLOT']['num_plot_pos']
@@ -81,16 +80,13 @@ swe_ds = ds_day['SWE']
 # value (if one exists)
 d = []
 
-for i in range(0, len(latitude)):
+for lat, lon in zip(latitude, longitude):
 
     # iterate through all latitudes and longitudes
-    ds_lat = swe_ds.sel(lat=latitude[i])
-    ds_lon = ds_lat.sel(lon=longitude[i])
+    ds_lat = swe_ds.sel(lat=lat)
+    ds_lon = ds_lat.sel(lon=lon)
 
     value = ds_lon.values
-
-    lat = latitude[i]
-    lon = longitude[i]
 
     # read in sorted list of cdf values
     # if cdf cannot be read then that lat lon is saved in the dictionary without a percentile
