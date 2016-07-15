@@ -18,6 +18,7 @@ from monitor.plot import add_gridlines, add_map_features
 import xarray as xr
 import argparse
 from datetime import datetime, timedelta
+import os
 
 # read in configuration file
 parser = argparse.ArgumentParser(description='Reorder dimensions')
@@ -29,8 +30,7 @@ config_dict = read_config(args.config_file[0].name)
 # read in from configuration file
 percent_file = config_dict['PLOT']['Percent_SWE']
 plot_loc = config_dict['PLOT']['plot_SWE']
-N = config_dict['ECFLOW']['Met_Delay']
-N = int(N)
+N = int(config_dict['ECFLOW']['Met_Delay'])
 
 # how many days behind metdata is from realtime
 date_unformat = datetime.now() - timedelta(days=N)
@@ -76,4 +76,4 @@ cbar.ax.tick_params(labelsize=12)
 cbar.ax.set_xlabel('percentile', fontsize=15)
 
 # save figure
-plt.savefig('%s/SWE_%s.png' % (plot_loc, date_ncfile), bbox='tight')
+plt.savefig(os.path.join(plot_loc,'SWE_%s.png' % (date_ncfile)), bbox='tight')

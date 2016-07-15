@@ -25,28 +25,28 @@ def add_gridlines(axis):
 
 def add_map_features(axis, states_provinces=True, country_borders=True,
                      land=True, ocean=True):
-    if states_provinces == True:
+    if states_provinces:
         states_provinces = cfeature.NaturalEarthFeature(
             category='cultural',
             name='admin_1_states_provinces_lines',
             scale='10m',
             facecolor='none')
         axis.add_feature(states_provinces, edgecolor='black', zorder=2)
-    if country_borders == True:
+    if country_borders:
         country_borders = cfeature.NaturalEarthFeature(
             category='cultural',
             name='admin_0_boundary_lines_land',
             scale='50m',
             facecolor='none')
         axis.add_feature(country_borders, edgecolor='black', zorder=2)
-    if land == True:
+    if land:
         land = cfeature.NaturalEarthFeature(
             category='physical',
             name='land',
             scale='50m',
             facecolor='gray')
         axis.add_feature(land, facecolor='gray', zorder=1)
-    if ocean == True:
+    if ocean:
         ocean = cfeature.NaturalEarthFeature(
             category='physical',
             name='ocean',
